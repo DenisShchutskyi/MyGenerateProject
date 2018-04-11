@@ -375,7 +375,7 @@ def create_nginx_file_for_flask(port_,
                                 path_to_dir):
     data_nginx = '''
 server {   
-    listen {};
+    listen '''+port_+''';
     underscores_in_headers on;
     client_body_buffer_size 32K;
     client_max_body_size 300M;
@@ -397,24 +397,17 @@ server {
 
     charset UTF-8;
     location / {
-        proxy_pass http://unix:{}/{}.sock;
-        proxy_set_header Host $host:{};
+        proxy_pass http://unix:'''+path_to_modules_+'''/'''+title_module_+'''.sock;
+        proxy_set_header Host $host:'''+port_+''';
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-NginX-Proxy true;
     }
-    location /{}/files{
-            alias {}/{}/{};
+    location /'''+'_'.join(title_project_.split())+'''/files{
+            alias '''+path_to_dir+'''/'''+title_project_+'''/'''+TITLE_DIR_FOR_DATA+''';
     }
 }
-'''.format(port_,
-           path_to_modules_,
-           title_module_,
-           port_,
-           '_'.join(title_project_.split()),
-           path_to_dir,
-           title_project_,
-           TITLE_DIR_FOR_DATA)
+'''
     with open('{}/{}.txt'.format(path_to_modules,
                                  title_module_), 'w+') as nginx:
         nginx.write(data_nginx)
