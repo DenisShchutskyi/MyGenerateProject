@@ -382,6 +382,20 @@ server {
 
     sendfile on;
     send_timeout 300s;
+    keepalive_timeout 7200;
+    tcp_nopush on;
+    tcp_nodelay on;
+    directio 10m;
+    server_tokens off;
+    gzip             on;
+    gzip_min_length  2000;
+    gzip_proxied     any;
+    gzip_types       text/html application/json, text/xml;
+
+    proxy_read_timeout 60s;
+    client_max_body_size 64M;
+
+    charset UTF-8;
     location / {
         proxy_pass http://unix:{}/{}.sock;
         proxy_set_header Host $host:{};
